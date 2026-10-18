@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>जुताई हिसाब</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f4f7f0;--card:#fff;--tx:#1d2b1a;--mu:#5f6e5b;--pr:#2e7d32;--bd:#d7e0d2;--dn:#c62828}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a11;--card:#1b261a;--tx:#e8f0e5;--mu:#9bab97;--pr:#66bb6a;--bd:#2d3d2b;--dn:#ef5350}}
+:root[data-theme="dark"]{--bg:#121a11;--card:#1b261a;--tx:#e8f0e5;--mu:#9bab97;--pr:#66bb6a;--bd:#2d3d2b;--dn:#ef5350}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Noto Sans Devanagari",sans-serif;padding:14px;max-width:560px;margin-inline:auto}
+h1{font-size:20px;margin:4px 0 4px}
+#st{font-size:12px;color:var(--mu);margin-bottom:10px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+label{display:block;font-size:13px;color:var(--mu);margin:10px 0 4px}
+input{width:100%;padding:11px;font-size:16px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx)}
+.opts{display:flex;gap:8px}
+.opt,.mopt{flex:1;padding:12px 4px;border:2px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font-size:16px;cursor:pointer}
+.opt.on,.mopt.on{border-color:var(--pr);background:var(--pr);color:#fff;font-weight:600}
+.tot{font-size:18px;margin:12px 0 8px;font-weight:600}
+.save,.pdf{width:100%;padding:13px;font-size:17px;border:0;border-radius:10px;background:var(--pr);color:#fff;font-weight:600;cursor:pointer}
+.prow{display:flex;gap:8px;margin-top:10px}.prow .pdf{margin-top:0;flex:1;padding:12px 4px;font-size:15px}
+.pdf{margin-top:10px;background:transparent;color:var(--pr);border:2px solid var(--pr)}
+.sum{display:flex;justify-content:space-between;font-size:15px}
+.sum b{font-size:20px;color:var(--pr)}
+.row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--bd)}
+.row:first-child{border-top:0}
+.no{min-width:30px;height:30px;border-radius:50%;background:var(--pr);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.mid{flex:1}
+.mid small{color:var(--mu);display:block}
+.del{background:none;border:1px solid var(--dn);color:var(--dn);border-radius:8px;padding:6px 10px;cursor:pointer}
+.amt{font-weight:700;white-space:nowrap}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tab{flex:1;padding:12px 4px;border:2px solid var(--pr);border-radius:10px;background:transparent;color:var(--pr);font-size:15px;font-weight:600;cursor:pointer}
+.tab.on{background:var(--pr);color:#fff}
+.bk{font-size:15px;display:flex;justify-content:space-between;padding:3px 0}
+.empty{color:var(--mu);text-align:center;padding:10px}
+</style>
+</head>
+<body>
+<h1>🚜 खेत जुताई हिसाब</h1>
+<div id="st">📱 सिर्फ इस फोन में सेव</div>
+<div class="tabs"><button class="tab on" id="t1">🚜 जुताई एंट्री</button><button class="tab" id="t2">💰 पैसे का हिसाब</button></div>
+<div id="v1">
+
+<div class="card">
+  <label>तारीख</label>
+  <input type="date" id="date">
+  <label>खेत वाले का नाम</label>
+  <input type="text" id="ow" list="owl" placeholder="जैसे: रामलाल">
+  <label>कौन सा खेत</label>
+  <input type="text" id="khet" placeholder="जैसे: आगे वाला खेत / नहर वाला">
+  <label>किस मशीन से जुताई?</label>
+  <input type="text" id="mc" list="mcl" placeholder="जैसे: रोटावेटर">
+  <datalist id="owl"></datalist>
+  <datalist id="mcl"><option value="हल"><option value="कल्टीवेटर"><option value="रोटावेटर"><option value="हैरो"><option value="डिस्क हैरो"><option value="MB प्लाऊ"><option value="ट्रोली खेप"><option value="ट्रैक्टर से (नद्द)"><option value="ट्रैक्टर करय्या"><option value="गेहूँ मशीन"><option value="कम्प्यूटर करय्या"></datalist>
+  <label>कितने बीघा ज़मीन?</label>
+  <input type="number" id="bg" inputmode="decimal" placeholder="जैसे: 2.5">
+  <label>जुताई कितनी बार?</label>
+  <div class="opts">
+    <button class="opt on" data-n="1">1 बार</button>
+    <button class="opt" data-n="2">2 बार</button>
+    <button class="opt" data-n="3">3 बार</button>
+  </div>
+  <label>रेट (₹ प्रति बीघा, प्रति बार)</label>
+  <input type="number" id="rate" inputmode="decimal" placeholder="जैसे: 500">
+  <div class="tot" id="tot">कुल: ₹0</div>
+  <button class="save" id="save">सेव करें</button>
+</div>
+
+<div class="card sum"><span>कुल जुताई खर्च<br><small id="cnt" style="color:var(--mu)"></small></span><b id="all">₹0</b></div>
+<div class="prow"><button class="pdf" id="pdf">📄 PDF बनाएं</button><button class="pdf" id="spdf">📤 PDF शेयर करें</button></div>
+<div class="card" id="list" style="margin-top:12px"></div>
+</div>
+<div id="v2" style="display:none">
+  <div class="card">
+    <label>तारीख</label><input type="date" id="pdt">
+    <label>खेत वाले का नाम (किसने दिए)</label><input type="text" id="pnm" list="owl" placeholder="जैसे: रामलाल">
+    <label>कौन सा खेत</label><input type="text" id="pkh" placeholder="जैसे: आगे वाला खेत">
+    <label>पैसे किसको दिए</label><input type="text" id="pto" placeholder="जैसे: ड्राइवर / मालिक का नाम">
+    <label>किस जगह दिए</label><input type="text" id="ppl" placeholder="जैसे: खेत पर / घर पर / बाज़ार">
+    <label>पेमेंट कैसे किया</label>
+    <div class="opts"><button class="mopt on" data-m="कैश">💵 कैश</button><button class="mopt" data-m="ऑनलाइन">📲 ऑनलाइन</button></div>
+    <label>कितने पैसे दिए (₹)</label><input type="number" id="pam" inputmode="decimal" placeholder="जैसे: 2000">
+    <button class="save" id="psave" style="margin-top:14px">जमा करें</button>
+  </div>
+  <div class="card">
+    <div class="bk"><span>कुल जुताई खर्च</span><b id="bk1">₹0</b></div>
+    <div class="bk"><span>अब तक जमा</span><b id="bk2">₹0</b></div>
+    <div class="bk" style="color:var(--mu);font-size:13px"><span>&nbsp;&nbsp;↳ कैश</span><span id="bk4">₹0</span></div>
+    <div class="bk" style="color:var(--mu);font-size:13px"><span>&nbsp;&nbsp;↳ ऑनलाइन</span><span id="bk5">₹0</span></div>
+    <div class="bk" style="border-top:1px solid var(--bd);margin-top:6px;padding-top:8px"><span>बाकी</span><b id="bk3" style="font-size:20px">₹0</b></div>
+  </div>
+  <div class="prow" style="margin:0 0 12px"><button class="pdf" id="ppdf">📄 PDF बनाएं</button><button class="pdf" id="sppdf">📤 PDF शेयर करें</button></div>
+  <div class="card" id="plist"></div>
+</div>
+
+<script>
+var KEY="jutayi_hisab_v1",n=1,data=[],db=null,uid=null,pays=[],KEY2="jutayi_pay_v1";
+function $(i){return document.getElementById(i)}
+function inr(x){return "₹"+Number(x).toLocaleString("en-IN")}
+function loadLocal(){try{var s=localStorage.getItem(KEY);data=s?JSON.parse(s):[]}catch(e){data=[]}
+  try{var q=localStorage.getItem(KEY2);pays=q?JSON.parse(q):[]}catch(e){pays=[]}}
+function store(){
+  try{localStorage.setItem(KEY,JSON.stringify(data));localStorage.setItem(KEY2,JSON.stringify(pays))}catch(e){}
+  if(db&&uid){db.doc("data/users/"+uid+"/hisab").set({entries:data,pays:pays}).then(function(){$("st").textContent="☁️ क्लाउड + फोन दोनों में सेव"}).catch(function(){$("st").textContent="📱 सिर्फ इस फोन में सेव"})}
+}
+async function initCloud(){
+  try{
+    if(!window.claude||!claude.use)return;
+    var u=await claude.use("user"),d=await claude.use("db");
+    if(!u||!d)return;
+    var id=await u.id();if(!id)return;
+    db=d;uid=id;
+    var s=await db.doc("data/users/"+uid+"/hisab").get();
+    var ce=s.exists?(s.data().entries||[]):[];
+    var cp=s.exists?(s.data().pays||[]):[];
+    if(ce.length||!data.length){data=ce.slice()}
+    if(cp.length||!pays.length){pays=cp.slice()}
+    store();render();
+  }catch(e){db=null}
+}
+function calc(){var r=parseFloat($("rate").value)||0,g=parseFloat($("bg").value)||0;var t=Math.round(g*n*r);$("tot").textContent="कुल: "+inr(t)+" ("+g+" बीघा × "+n+" बार × "+inr(r)+")";return t}
+document.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){
+  n=+b.dataset.n;document.querySelectorAll(".opt").forEach(function(x){x.classList.toggle("on",x===b)});calc()}});
+$("rate").oninput=calc;$("bg").oninput=calc;
+$("date").value=new Date().toISOString().slice(0,10);
+$("save").onclick=function(){
+  var r=parseFloat($("rate").value),g=parseFloat($("bg").value);
+  if(!g||g<=0){alert("बीघा डालें");return}
+  if(!r||r<=0){alert("रेट डालें");return}
+  data.unshift({id:Date.now(),date:$("date").value,ow:$("ow").value.trim(),khet:$("khet").value.trim()||"खेत",mc:$("mc").value.trim(),bg:g,n:n,rate:r,total:Math.round(g*n*r)});
+  store();$("ow").value="";$("khet").value="";$("mc").value="";$("bg").value="";render()};
+function del(id){if(confirm("यह एंट्री हटाएं?")){data=data.filter(function(d){return d.id!==id});store();render()}}
+function fd(s){return s.split("-").reverse().join("/")}
+function modeSum(m){var p=0;pays.forEach(function(x){if(x.mode===m)p+=x.amt});return p}
+var pm="कैश";
+document.querySelectorAll(".mopt").forEach(function(b){b.onclick=function(){pm=b.dataset.m;document.querySelectorAll(".mopt").forEach(function(x){x.classList.toggle("on",x===b)})}});
+function paidSum(){var p=0;pays.forEach(function(x){p+=x.amt});return p}
+function totSum(){var s=0;data.forEach(function(d){s+=d.total});return s}
+function renderPay(){
+  var s=totSum(),p=paidSum(),b=s-p;
+  $("bk1").textContent=inr(s);$("bk2").textContent=inr(p);$("bk4").textContent=inr(modeSum("कैश"));$("bk5").textContent=inr(modeSum("ऑनलाइन"));
+  $("bk3").textContent=b>=0?inr(b):inr(-b)+" (ज़्यादा जमा)";$("bk3").style.color=b>0?"var(--dn)":"var(--pr)";
+  var L=$("plist");L.innerHTML="";
+  if(!pays.length){L.innerHTML='<div class="empty">अभी कोई पेमेंट नहीं</div>';return}
+  pays.forEach(function(d,i){
+    var r=document.createElement("div");r.className="row";
+    var no=document.createElement("div");no.className="no";no.textContent=pays.length-i;
+    var a=document.createElement("div");a.className="mid";
+    var t=document.createElement("b");t.textContent=(d.name||"खेत वाला")+(d.kh?" – "+d.kh:"");
+    var sm=document.createElement("small");sm.textContent=fd(d.date)+(d.to?" • किसको: "+d.to:"")+(d.place?" • जगह: "+d.place:"")+(d.mode?" • "+d.mode:"");
+    a.appendChild(t);a.appendChild(sm);
+    var m=document.createElement("div");m.className="amt";m.textContent=inr(d.amt);
+    var x=document.createElement("button");x.className="del";x.textContent="हटाएं";
+    x.onclick=function(){if(confirm("यह पेमेंट हटाएं?")){pays=pays.filter(function(y){return y.id!==d.id});store();render()}};
+    r.appendChild(no);r.appendChild(a);r.appendChild(m);r.appendChild(x);L.appendChild(r)})}
+function tab(v){$("v1").style.display=v==1?"":"none";$("v2").style.display=v==2?"":"none";$("t1").classList.toggle("on",v==1);$("t2").classList.toggle("on",v==2)}
+$("t1").onclick=function(){tab(1)};$("t2").onclick=function(){tab(2)};
+$("pdt").value=new Date().toISOString().slice(0,10);
+$("psave").onclick=function(){
+  var a=parseFloat($("pam").value);
+  if(!a||a<=0){alert("रकम डालें");return}
+  pays.unshift({id:Date.now(),date:$("pdt").value,name:$("pnm").value.trim(),kh:$("pkh").value.trim(),to:$("pto").value.trim(),place:$("ppl").value.trim(),mode:pm,amt:a});
+  store();$("pam").value="";$("pnm").value="";$("pkh").value="";$("pto").value="";$("ppl").value="";render()};
+function fillOw(){
+  var seen={},h="";
+  data.forEach(function(d){if(d.ow)seen[d.ow]=1});pays.forEach(function(d){if(d.name)seen[d.name]=1});
+  Object.keys(seen).forEach(function(k){var o=document.createElement("option");o.value=k;h+=o.outerHTML});
+  $("owl").innerHTML=h}
+function render(){
+  renderPay();fillOw();
+  var s=0;data.forEach(function(d){s+=d.total});
+  $("all").textContent=inr(s);$("cnt").textContent=data.length+" एंट्री";
+  var L=$("list");L.innerHTML="";
+  if(!data.length){L.innerHTML='<div class="empty">अभी कोई हिसाब नहीं</div>';return}
+  data.forEach(function(d,i){
+    var r=document.createElement("div");r.className="row";
+    var no=document.createElement("div");no.className="no";no.textContent=data.length-i;
+    var a=document.createElement("div");a.className="mid";
+    var t=document.createElement("b");t.textContent=(d.ow?d.ow+" – ":"")+d.khet;
+    var sm=document.createElement("small");
+    sm.textContent=fd(d.date)+" • "+(d.mc?d.mc+" • ":"")+(d.bg?d.bg+" बीघा • ":"")+d.n+" बार जुताई × "+inr(d.rate);
+    a.appendChild(t);a.appendChild(sm);
+    var m=document.createElement("div");m.className="amt";m.textContent=inr(d.total);
+    var x=document.createElement("button");x.className="del";x.textContent="हटाएं";x.onclick=function(){del(d.id)};
+    r.appendChild(no);r.appendChild(a);r.appendChild(m);r.appendChild(x);L.appendChild(r)})}
+
+/* ---- PDF ---- */
+var FONT='"Noto Sans Devanagari",system-ui,sans-serif';
+function names(rows,f){var u=[];rows.forEach(function(d){if(d[f]&&u.indexOf(d[f])<0)u.push(d[f])});return u.join(", ")}
+function drawPages(){
+  var rows=data.slice().reverse(),per=24,pages=Math.max(1,Math.ceil(rows.length/per)),out=[],sum=0;
+  rows.forEach(function(d){sum+=d.total});
+  var M=60,R=1130,W=R-M,PAD=12;
+  var cw=[60,165,175,240,95,95,110,130],cx=[],ax=M;
+  cw.forEach(function(w){cx.push(ax);ax+=w});
+  function m(v){return "₹"+Number(v).toLocaleString("en-IN")}
+  for(var p=0;p<pages;p++){
+    var c=document.createElement("canvas");c.width=1190;c.height=1684;var x=c.getContext("2d");
+    x.fillStyle="#fff";x.fillRect(0,0,1190,1684);x.textBaseline="middle";x.textAlign="left";
+    function fit(t,w){t=String(t);while(t.length>1&&x.measureText(t).width>w){t=t.slice(0,-1)}return t}
+    x.fillStyle="#1b5e20";x.font="bold 48px "+FONT;x.fillText("खेत जुताई हिसाब",M,80);
+    x.font="26px "+FONT;x.fillStyle="#555";x.fillText("तारीख: "+fd(new Date().toISOString().slice(0,10))+"   |   पेज "+(p+1)+"/"+pages,M,135);
+    var nm=names(rows,"ow");if(nm){x.textAlign="right";x.font="bold 30px "+FONT;x.fillStyle="#1b5e20";x.fillText(fit("खेत वाला: "+nm,600),R,135);x.textAlign="left"}
+    var y=205;
+    x.fillStyle="#2e7d32";x.fillRect(M,y-28,W,56);x.fillStyle="#fff";x.font="bold 24px "+FONT;
+    ["क्र.","तारीख","खेत","मशीन","बीघा","बार","रेट","कुल"].forEach(function(h,i){x.fillText(h,cx[i]+PAD,y)});
+    y+=56;
+    rows.slice(p*per,p*per+per).forEach(function(d,i){
+      if(i%2==0){x.fillStyle="#f1f6ee";x.fillRect(M,y-26,W,52)}
+      x.fillStyle="#111";x.font="24px "+FONT;
+      var vals=[p*per+i+1,fd(d.date),d.khet,d.mc||"-",d.bg||"-",d.n+" बार",m(d.rate),m(d.total)];
+      vals.forEach(function(v,j){x.fillText(fit(v,cw[j]-PAD*2),cx[j]+PAD,y)});
+      y+=52});
+    if(p==pages-1){
+      x.fillStyle="#1b5e20";x.fillRect(M,y,W,4);y+=45;
+      var pd=paidSum();
+      x.font="bold 32px "+FONT;
+      x.fillText("कुल एंट्री: "+rows.length,M,y);
+      x.textAlign="right";x.fillText("कुल खर्च: "+m(sum),R,y);
+      y+=55;x.textAlign="left";x.fillText("जमा: "+m(pd),M,y);
+      x.textAlign="right";x.fillText("बाकी: "+m(sum-pd),R,y);x.textAlign="left"}
+    out.push(c)}
+  return out}
+function b64(s){var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
+function makePdf(cs){
+  var parts=[],offs=[],len=0,enc=new TextEncoder();
+  function add(v){if(typeof v==="string")v=enc.encode(v);parts.push(v);len+=v.length}
+  function obj(k,body){offs[k]=len;add(k+" 0 obj\n"+body+"\nendobj\n")}
+  var N=cs.length,kids=[];
+  add("%PDF-1.4\n");
+  obj(1,"<< /Type /Catalog /Pages 2 0 R >>");
+  for(var i=0;i<N;i++)kids.push((5+3*i)+" 0 R");
+  obj(2,"<< /Type /Pages /Kids ["+kids.join(" ")+"] /Count "+N+" >>");
+  cs.forEach(function(c,i){
+    var j=b64(c.toDataURL("image/jpeg",0.85).split(",")[1]),im=3+3*i,ct=4+3*i,pg=5+3*i;
+    offs[im]=len;add(im+" 0 obj\n<< /Type /XObject /Subtype /Image /Width "+c.width+" /Height "+c.height+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+j.length+" >>\nstream\n");add(j);add("\nendstream\nendobj\n");
+    var cs2="q 595 0 0 842 0 0 cm /Im0 Do Q";
+    obj(ct,"<< /Length "+cs2.length+" >>\nstream\n"+cs2+"\nendstream");
+    obj(pg,"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /XObject << /Im0 "+im+" 0 R >> >> /Contents "+ct+" 0 R >>")});
+  var xo=len,tot=3*N+3;
+  var xr="xref\n0 "+tot+"\n0000000000 65535 f \n";
+  for(var k=1;k<tot;k++)xr+=String(offs[k]).padStart(10,"0")+" 00000 n \n";
+  add(xr+"trailer\n<< /Size "+tot+" /Root 1 0 R >>\nstartxref\n"+xo+"\n%%EOF");
+  return new Blob(parts,{type:"application/pdf"})}
+async function savePdf(blob,name){
+  try{
+    var dl=window.claude&&claude.use?await claude.use("downloads"):null;
+    if(dl){await dl.save({filename:name,data:blob})}
+    else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove()}
+  }catch(e){if(!e||e.code!=="declined")alert("PDF नहीं बन पाई")}}
+async function sharePdf(blob,name,title){
+  try{
+    var f=new File([blob],name,{type:"application/pdf"});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:title});return}
+  }catch(e){if(e&&e.name==="AbortError")return}
+  alert("इस जगह शेयर नहीं हो पाया, PDF सेव कर रहे हैं");
+  savePdf(blob,name)}
+$("spdf").onclick=function(){
+  if(!data.length){alert("पहले कोई एंट्री सेव करें");return}
+  sharePdf(makePdf(drawPages()),"jutayi-hisab.pdf","खेत जुताई हिसाब")};
+$("pdf").onclick=function(){
+  if(!data.length){alert("पहले कोई एंट्री सेव करें");return}
+  savePdf(makePdf(drawPages()),"jutayi-hisab.pdf")};
+function drawPayPages(){
+  var rows=pays.slice().reverse(),per=24,pages=Math.max(1,Math.ceil(rows.length/per)),out=[];
+  var M=60,R=1130,W=R-M,PAD=10,cw=[60,160,170,170,180,130,200],cx=[],ax=M;
+  cw.forEach(function(w){cx.push(ax);ax+=w});
+  function m(v){return "₹"+Number(v).toLocaleString("en-IN")}
+  var tj=totSum(),pd=paidSum();
+  for(var p=0;p<pages;p++){
+    var c=document.createElement("canvas");c.width=1190;c.height=1684;var x=c.getContext("2d");
+    x.fillStyle="#fff";x.fillRect(0,0,1190,1684);x.textBaseline="middle";x.textAlign="left";
+    function fit(t,w){t=String(t);while(t.length>1&&x.measureText(t).width>w){t=t.slice(0,-1)}return t}
+    x.fillStyle="#1b5e20";x.font="bold 48px "+FONT;x.fillText("पैसे का हिसाब (जमा)",M,80);
+    x.font="26px "+FONT;x.fillStyle="#555";x.fillText("तारीख: "+fd(new Date().toISOString().slice(0,10))+"   |   पेज "+(p+1)+"/"+pages,M,135);
+    var nm=names(rows,"name");if(nm){x.textAlign="right";x.font="bold 30px "+FONT;x.fillStyle="#1b5e20";x.fillText(fit("खेत वाला: "+nm,600),R,135);x.textAlign="left"}
+    var y=205;
+    x.fillStyle="#2e7d32";x.fillRect(M,y-28,W,56);x.fillStyle="#fff";x.font="bold 24px "+FONT;
+    ["क्र.","तारीख","खेत","किसको दिए","जगह","तरीका","रकम"].forEach(function(h,i){x.fillText(h,cx[i]+PAD,y)});
+    y+=56;
+    rows.slice(p*per,p*per+per).forEach(function(d,i){
+      if(i%2==0){x.fillStyle="#f1f6ee";x.fillRect(M,y-26,W,52)}
+      x.fillStyle="#111";x.font="24px "+FONT;
+      [p*per+i+1,fd(d.date),d.kh||"-",d.to||"-",d.place||"-",d.mode||"-",m(d.amt)].forEach(function(v,j){x.fillText(fit(v,cw[j]-PAD*2),cx[j]+PAD,y)});
+      y+=52});
+    if(p==pages-1){
+      x.fillStyle="#1b5e20";x.fillRect(M,y,W,4);y+=45;x.font="bold 32px "+FONT;
+      x.fillText("कुल पेमेंट: "+rows.length,M,y);x.textAlign="right";x.fillText("कुल जमा: "+m(pd),R,y);
+      y+=55;x.textAlign="left";x.fillText("कुल जुताई खर्च: "+m(tj),M,y);
+      x.textAlign="right";x.fillText((tj-pd>=0?"बाकी: "+m(tj-pd):"ज़्यादा जमा: "+m(pd-tj)),R,y);
+      y+=55;x.textAlign="left";x.fillText("कैश: "+m(modeSum("कैश")),M,y);x.textAlign="right";x.fillText("ऑनलाइन: "+m(modeSum("ऑनलाइन")),R,y);x.textAlign="left"}
+    out.push(c)}
+  return out}
+$("sppdf").onclick=function(){
+  if(!pays.length){alert("पहले कोई पेमेंट जमा करें");return}
+  sharePdf(makePdf(drawPayPages()),"jama-hisab.pdf","पैसे का हिसाब (जमा)")};
+$("ppdf").onclick=function(){
+  if(!pays.length){alert("पहले कोई पेमेंट जमा करें");return}
+  savePdf(makePdf(drawPayPages()),"jama-hisab.pdf")};
+
+loadLocal();calc();render();initCloud();
+</script>
+</body>
+</html>
